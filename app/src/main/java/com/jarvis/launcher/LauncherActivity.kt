@@ -33,6 +33,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextClock
 import android.widget.TextView
+import android.widget.Toast
 
 object Ui {
     val BG_TOP = Color.parseColor("#0C1117")
@@ -40,8 +41,10 @@ object Ui {
     val ACCENT = Color.parseColor("#3DB8E8")
     val TEXT = Color.parseColor("#E6EDF3")
     val DIM = Color.parseColor("#8B98A5")
-    val PANEL = Color.parseColor("#161D26")
+    val PANEL = Color.parseColor("#CC161D26")
     val LINE = Color.parseColor("#26303B")
+    val SCRIM_TOP = Color.parseColor("#66050A10")
+    val SCRIM_BOTTOM = Color.parseColor("#CC03060A")
 }
 
 class LauncherActivity : Activity() {
@@ -77,14 +80,14 @@ class LauncherActivity : Activity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        window.statusBarColor = Ui.BG_TOP
-        window.navigationBarColor = Ui.BG_BOTTOM
+        window.statusBarColor = Color.TRANSPARENT
+        window.navigationBarColor = Color.TRANSPARENT
 
         root = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
             background = GradientDrawable(
                 GradientDrawable.Orientation.TOP_BOTTOM,
-                intArrayOf(Ui.BG_TOP, Ui.BG_BOTTOM)
+                intArrayOf(Ui.SCRIM_TOP, Ui.SCRIM_BOTTOM)
             )
             setPadding(dpi(20f), dpi(12f), dpi(20f), dpi(12f))
         }
@@ -151,7 +154,8 @@ class LauncherActivity : Activity() {
         val items = arrayOf(
             "Change my name (${Greeting.name(this)})",
             if (voice) "Turn voice greeting off" else "Turn voice greeting on",
-            "Test greeting"
+            "Test greeting",
+            "Change wallpaper"
         )
         AlertDialog.Builder(this, android.R.style.Theme_DeviceDefault_Dialog_Alert)
             .setTitle("IONE settings")
@@ -160,10 +164,19 @@ class LauncherActivity : Activity() {
                     0 -> askName()
                     1 -> Greeting.setVoice(this, !voice)
                     2 -> startService(Intent(this, GreetService::class.java).setAction(GreetService.ACTION_TEST))
+                    3 -> chooseWallpaper()
                     else -> {}
                 }
             }
             .show()
+    }
+
+    private fun chooseWallpaper() {
+        try {
+            startActivity(Intent.createChooser(Intent(Intent.ACTION_SET_WALLPAPER), "Select wallpaper"))
+        } catch (e: Exception) {
+            Toast.makeText(this, "No wallpaper picker found on this phone", Toast.LENGTH_LONG).show()
+        }
     }
 
     private fun askName() {
