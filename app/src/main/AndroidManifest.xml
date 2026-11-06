@@ -10,7 +10,7 @@
     <application
         android:allowBackup="false"
         android:label="IONE"
-        android:theme="@android:style/Theme.Material.NoActionBar">
+                android:theme="@android:style/Theme.Material.Wallpaper.NoTitleBar">
 
         <activity
             android:name=".LauncherActivity"
